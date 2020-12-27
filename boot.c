@@ -2311,6 +2311,10 @@ static EFI_STATUS reboot_into_firmware(VOID) {
         return err;
 }
 
+void dummy(VOID) {
+       Print("Hey from ABM! ;)");
+}
+
 static VOID config_free(Config *config) {
         UINTN i;
 
@@ -2436,6 +2440,11 @@ EFI_STATUS efi_main(EFI_HANDLE image, EFI_SYSTEM_TABLE *sys_table) {
                                      L"auto-efi-default", '\0', L"EFI Default Loader", L"\\EFI\\Boot\\boot" EFI_MACHINE_TYPE_NAME ".efi");
         config_entry_add_osx(&config);
 
+        config_entry_add_call(&config,
+                                              L"auto-reboot-to-firmware-setup",
+                                              L"Dummy",
+                                              dummy);
+        
         if (config.auto_firmware && efivar_get_raw(&global_guid, L"OsIndicationsSupported", &b, &size) == EFI_SUCCESS) {
                 UINT64 osind = (UINT64)*b;
 
